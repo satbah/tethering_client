@@ -4,6 +4,7 @@ IMG_*.png
 IMG_*.jpeg
 IMG_*.jpg
 *.pdf
+*.tmp
 
 # macOS / editor
 .DS_Store
