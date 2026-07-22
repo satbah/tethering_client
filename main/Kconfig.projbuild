@@ -1,0 +1,203 @@
+menu "Tethering client configuration"
+
+choice TETHER_BOARD_PROFILE
+    prompt "Board profile"
+    default TETHER_BOARD_PROFILE_JC4827W543
+    help
+        Select the board layout to use for GPIO defaults.
+
+config TETHER_BOARD_PROFILE_HELTEC_WB32LAF
+    bool "Heltec WB32LAF (ESP32-S3)"
+
+config TETHER_BOARD_PROFILE_ESP32C3_GENERIC
+    bool "ESP32-C3 board"
+
+config TETHER_BOARD_PROFILE_JC4827W543
+    bool "JC4827W543C_I 4.3inch ESP32-S3 board"
+
+endchoice
+
+config TETHER_WIFI_SSID
+    string "Tethering SSID"
+    default "iPhoneXR++"
+
+config TETHER_WIFI_PASSWORD
+    string "Tethering password"
+    default "08037378086"
+
+config TETHER_SERVER_URL
+    string "HTTPS server URL"
+    default "https://d-and.jp/"
+
+config TETHER_WIFI_TIMEOUT_SECONDS
+    int "Wi-Fi connection timeout (seconds)"
+    range 1 25
+    default 15
+
+config TETHER_DEBUG_SOFT_RESET
+    bool "Use software wait + restart instead of deep sleep"
+    default n
+    help
+        Keep the USB serial port alive for debugging. The app waits in
+        software for the configured sleep interval, then calls esp_restart().
+
+config TETHER_STATUS_LED_GPIO
+    int "Status LED GPIO (-1 if not connected)"
+    range -1 48
+    default 35 if TETHER_BOARD_PROFILE_HELTEC_WB32LAF
+    default 8 if TETHER_BOARD_PROFILE_ESP32C3_GENERIC
+    default -1 if TETHER_BOARD_PROFILE_JC4827W543
+
+config TETHER_STATUS_LED_ACTIVE_LEVEL
+    int "Status LED active level (0=Low, 1=High)"
+    range 0 1
+    default 1
+
+config TETHER_STATUS_LED_BLINK_MS
+    int "Status LED blink interval (ms)"
+    range 10 2000
+    default 200
+
+config TETHER_OLED_VEXT_GPIO
+    int "Display power control GPIO (-1 if not connected)"
+    range -1 48
+    default 36 if TETHER_BOARD_PROFILE_HELTEC_WB32LAF
+    default -1 if TETHER_BOARD_PROFILE_ESP32C3_GENERIC
+    default -1 if TETHER_BOARD_PROFILE_JC4827W543
+    help
+        Heltec V3系の schematic では Vext_Ctrl が表示部の給電スイッチを制御します。
+        既定値は GPIO36 です。
+
+config TETHER_OLED_VEXT_ACTIVE_LEVEL
+    int "Display power active level (0=Low, 1=High)"
+    range 0 1
+    default 0
+
+config TETHER_DISABLE_LORA
+    bool "Keep onboard SX1262 LoRa radio disabled"
+    default y if TETHER_BOARD_PROFILE_HELTEC_WB32LAF
+    default n if TETHER_BOARD_PROFILE_ESP32C3_GENERIC
+    default n if TETHER_BOARD_PROFILE_JC4827W543
+    help
+        For Heltec WiFi LoRa 32 / WB32L V3 hardware. The SX1262 is held
+        in reset and its SPI/control pins are made inactive. Its 3.3 V rail
+        is not software-switchable on this board.
+
+config TETHER_LORA_NSS_GPIO
+    int "LoRa NSS GPIO"
+    default 8
+    depends on TETHER_DISABLE_LORA
+
+config TETHER_LORA_SCK_GPIO
+    int "LoRa SCK GPIO"
+    default 9
+    depends on TETHER_DISABLE_LORA
+
+config TETHER_LORA_MOSI_GPIO
+    int "LoRa MOSI GPIO"
+    default 10
+    depends on TETHER_DISABLE_LORA
+
+config TETHER_LORA_RESET_GPIO
+    int "LoRa reset GPIO"
+    default 12
+    depends on TETHER_DISABLE_LORA
+
+config TETHER_WAKE_BUTTON_GPIO
+    int "Button wakeup GPIO (RTC-capable)"
+    range -1 21
+    default 0 if TETHER_BOARD_PROFILE_HELTEC_WB32LAF
+    default -1 if TETHER_BOARD_PROFILE_ESP32C3_GENERIC
+    default 0 if TETHER_BOARD_PROFILE_JC4827W543
+    help
+        Set to -1 to disable button wake. On ESP32-C3, only GPIO0~GPIO5 can wake from deep sleep.
+
+config TETHER_WAKE_BUTTON_ACTIVE_LEVEL
+    int "Button active level (0=Low, 1=High)"
+    range 0 1
+    default 0
+
+config TETHER_JC_LCD_CLK_GPIO
+    int "JC LCD quad clock GPIO"
+    range -1 48
+    default -1 if !TETHER_BOARD_PROFILE_JC4827W543
+    default 47 if TETHER_BOARD_PROFILE_JC4827W543
+
+config TETHER_JC_LCD_CS_GPIO
+    int "JC LCD CS GPIO"
+    range -1 48
+    default -1 if !TETHER_BOARD_PROFILE_JC4827W543
+    default 45 if TETHER_BOARD_PROFILE_JC4827W543
+
+config TETHER_JC_LCD_DATA0_GPIO
+    int "JC LCD data0 GPIO"
+    range -1 48
+    default -1 if !TETHER_BOARD_PROFILE_JC4827W543
+    default 21 if TETHER_BOARD_PROFILE_JC4827W543
+
+config TETHER_JC_LCD_DATA1_GPIO
+    int "JC LCD data1 GPIO"
+    range -1 48
+    default -1 if !TETHER_BOARD_PROFILE_JC4827W543
+    default 48 if TETHER_BOARD_PROFILE_JC4827W543
+
+config TETHER_JC_LCD_DATA2_GPIO
+    int "JC LCD data2 GPIO"
+    range -1 48
+    default -1 if !TETHER_BOARD_PROFILE_JC4827W543
+    default 40 if TETHER_BOARD_PROFILE_JC4827W543
+
+config TETHER_JC_LCD_DATA3_GPIO
+    int "JC LCD data3 GPIO"
+    range -1 48
+    default -1 if !TETHER_BOARD_PROFILE_JC4827W543
+    default 39 if TETHER_BOARD_PROFILE_JC4827W543
+
+config TETHER_JC_LCD_DC_GPIO
+    int "JC LCD D/C GPIO (-1 if not connected)"
+    range -1 48
+    default -1 if !TETHER_BOARD_PROFILE_JC4827W543
+    default -1 if TETHER_BOARD_PROFILE_JC4827W543
+
+config TETHER_JC_LCD_RST_GPIO
+    int "JC LCD reset GPIO (-1 if not connected)"
+    range -1 48
+    default -1 if !TETHER_BOARD_PROFILE_JC4827W543
+    default -1 if TETHER_BOARD_PROFILE_JC4827W543
+
+config TETHER_JC_LCD_BL_GPIO
+    int "JC LCD backlight GPIO (-1 if not connected)"
+    range -1 48
+    default -1 if !TETHER_BOARD_PROFILE_JC4827W543
+    default 1 if TETHER_BOARD_PROFILE_JC4827W543
+
+config TETHER_JC_LCD_BL_ACTIVE_LEVEL
+    int "JC LCD backlight active level (0=Low, 1=High)"
+    range 0 1
+    default 1
+
+config TETHER_JC_TOUCH_SDA_GPIO
+    int "JC touch SDA GPIO (-1 if not connected)"
+    range -1 48
+    default -1 if !TETHER_BOARD_PROFILE_JC4827W543
+    default 8 if TETHER_BOARD_PROFILE_JC4827W543
+
+config TETHER_JC_TOUCH_SCL_GPIO
+    int "JC touch SCL GPIO (-1 if not connected)"
+    range -1 48
+    default -1 if !TETHER_BOARD_PROFILE_JC4827W543
+    default 4 if TETHER_BOARD_PROFILE_JC4827W543
+
+config TETHER_JC_TOUCH_RST_GPIO
+    int "JC touch reset GPIO (-1 if not connected)"
+    range -1 48
+    default -1 if !TETHER_BOARD_PROFILE_JC4827W543
+    default 38 if TETHER_BOARD_PROFILE_JC4827W543
+
+config TETHER_JC_TOUCH_INT_GPIO
+    int "JC touch interrupt GPIO (-1 if not connected)"
+    range -1 48
+    default -1 if !TETHER_BOARD_PROFILE_JC4827W543
+    default 3 if TETHER_BOARD_PROFILE_JC4827W543
+
+endmenu

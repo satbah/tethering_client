@@ -1,0 +1,27 @@
+# Local camera/screenshot artifacts
+IMG_*.HEIC
+IMG_*.png
+IMG_*.jpeg
+IMG_*.jpg
+*.pdf
+
+# macOS / editor
+.DS_Store
+
+# ESP-IDF build outputs
+build/
+*.bin
+*.elf
+*.map
+compile_commands.json
+
+# ESP-IDF managed components (reproducible from manifest)
+managed_components/
+
+# Local runtime output
+log/
+sdkconfig.old
+
+# local environments
+.venv/
+.venv-*/

@@ -1,0 +1,6 @@
+{
+  "idf.customExtraVars": {},
+  "idf.currentSetup": "/Users/kazus/.espressif/v5.4.4/esp-idf",
+  "idf.port": "/dev/tty.usbmodem11101",
+  "idf.flashType": "UART"
+}
